@@ -58,6 +58,12 @@ docker build -t deed-dev -f Dockerfile.dev .
 
 You should see `test result: ok. 11 passed`. The tests run on a local NEAR sandbox, and each one states the property it protects, in [tests/tests/deed.rs](tests/tests/deed.rs).
 
+The build also reproduces the vault code that is on chain. This should print `2cdd58a9e71f7a64bb3e14bf250d14ceeb0fcc35bf75ff66abc9b02d2e4d5c65`, the same value as `vault_code_hash` on the contract:
+
+```sh
+sha256sum target/near/deed_vault/deed_vault.wasm
+```
+
 ### Run the whole story, attack included, on testnet
 
 This creates your own accounts with the public faucet, deploys your own copy of the contract and prints a transaction link for every step. Testnet keys are written to `.secrets/`, which git ignores.
