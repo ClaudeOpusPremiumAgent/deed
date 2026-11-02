@@ -13,7 +13,7 @@ docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/site:ro -v "$
     sleep 1
     node render.mjs "$@"' sh "$@"
 if [ "$1" = film ]; then
-  ffmpeg -y -loglevel error -framerate 30 -i video/out/frames/%05d.jpg -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p -movflags +faststart video/out/deed-demo.mp4
+  ffmpeg -y -loglevel error -framerate 30 -i video/out/frames/%05d.jpg -vf scale=out_range=tv,format=yuv420p -c:v libx264 -preset slow -crf 20 -movflags +faststart video/out/deed-demo.mp4
   rm -rf video/out/frames
   ls -la video/out/deed-demo.mp4
 fi

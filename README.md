@@ -126,7 +126,7 @@ contracts/vault    the keyless account, no dependencies
 contracts/slow     test helper: slow, failing and huge-return calls, mock tokens
 tests/tests        sandbox tests
 scripts            deploy to testnet and run the demo
-web                the data room, one static page
+docs               the data room, one static page (GitHub Pages)
 ```
 
 ## How this was built

@@ -12,7 +12,7 @@ const browser = await chromium.launch();
 
 // A real capture of the data room, reading testnet live.
 const room = await browser.newPage({ viewport: { width: 1040, height: 1000 } });
-await room.goto(`${SITE}/web/index.html?contract=v1.deed-hq.testnet&deed=desk-5`);
+await room.goto(`${SITE}/docs/index.html?contract=v1.deed-hq.testnet&deed=desk-5`);
 await room.waitForSelector("#room:not([hidden])", { timeout: 60000 });
 await room.addStyleTag({ content: ".picker, .lede, h1 { display: none !important; } main { padding-top: 0 !important; } #status { display: none; } footer { display: none; }" });
 await room.screenshot({ path: `${OUT}/dataroom.png`, fullPage: true });
