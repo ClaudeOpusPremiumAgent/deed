@@ -24,7 +24,8 @@ async function refused(text, run) {
   } catch (e) {
     if (e.message.startsWith("NOT REFUSED")) throw e;
     const why = (e.message.match(/Smart contract panicked: ([^"\n]*)/) ?? [null, e.message.slice(0, 120)])[1];
-    console.log(`   BLOCKED ${text}\n        contract said: ${why}`);
+    const hash = e.txHash || e.context?.transactionHash || e.transaction?.hash;
+    console.log(`   BLOCKED ${text}\n        contract said: ${why}${hash ? `\n        ${txLink(hash)}` : ""}`);
   }
 }
 

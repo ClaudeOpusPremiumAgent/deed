@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Deed demo film</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=block" rel="stylesheet">
+<style>
+  :root { --paper: #f6f2e8; --sheet: #fffdf7; --ink: #1d1b16; --muted: #6a6457; --rule: #d8d0bd; --good: #1f5d3a; --good-bg: #e3efe3; --bad: #8c2a1f; --bad-bg: #f6e2dc; --accent: #23395b; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); color: var(--ink); font-family: Newsreader, Georgia, serif; }
+  .scene { position: absolute; inset: 0; padding: 84px 120px; display: none; flex-direction: column; gap: 30px; }
+  h1 { font-size: 92px; line-height: 1.06; font-weight: 600; letter-spacing: -0.015em; }
+  h2 { font-size: 66px; line-height: 1.1; font-weight: 600; letter-spacing: -0.01em; }
+  p { font-size: 52px; line-height: 1.25; }
+  .big { font-size: 74px; line-height: 1.14; }
+  .muted { color: var(--muted); }
+  .bad { color: var(--bad); }
+  .small { font-size: 40px; line-height: 1.3; }
+  .kicker { font: 700 36px "JetBrains Mono", monospace; letter-spacing: 0.08em; color: var(--accent); }
+  .mono { font-family: "JetBrains Mono", monospace; }
+  .center { justify-content: center; }
+  .log { display: grid; gap: 18px; margin-top: 8px; }
+  .line { display: grid; grid-template-columns: 200px 1fr auto; gap: 26px; align-items: baseline; font-size: 44px; line-height: 1.2; }
+  .tag { font: 700 30px "JetBrains Mono", monospace; text-align: center; padding: 8px 0; border: 3px solid; border-radius: 3px; letter-spacing: 0.04em; }
+  .ok { color: var(--good); background: var(--good-bg); }
+  .no { color: var(--bad); background: var(--bad-bg); }
+  .tx { font: 400 30px "JetBrains Mono", monospace; color: var(--muted); }
+  .why { grid-column: 2 / 4; font: 400 36px "JetBrains Mono", monospace; color: var(--bad); margin-top: -8px; }
+  .figures { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 26px; }
+  .figure { background: var(--sheet); border: 2px solid var(--rule); padding: 24px 32px; }
+  .figure small { display: block; font-size: 38px; color: var(--muted); }
+  .figure b { font: 700 84px "JetBrains Mono", monospace; letter-spacing: -0.03em; }
+  .diagram { display: grid; grid-template-columns: 1fr 100px 1.5fr; gap: 26px; align-items: stretch; margin: 12px 0; }
+  .card { background: var(--sheet); border: 2px solid var(--ink); padding: 32px 38px; display: grid; gap: 8px; align-content: center; }
+  .card .label { font: 700 30px "JetBrains Mono", monospace; color: var(--muted); letter-spacing: 0.08em; }
+  .card strong { font-size: 60px; line-height: 1.1; font-weight: 600; }
+  .card .id { font: 400 38px "JetBrains Mono", monospace; }
+  .arrow { align-self: center; justify-self: center; font-size: 90px; }
+  .verdict { display: flex; align-items: center; gap: 44px; background: var(--bad-bg); border: 4px solid var(--bad); padding: 34px 44px; color: var(--bad); }
+  .verdict .stamp { font: 700 80px "JetBrains Mono", monospace; letter-spacing: 0.02em; }
+  .verdict .said { font: 400 46px "JetBrains Mono", monospace; line-height: 1.25; }
+  .changes { display: grid; grid-template-columns: 300px 1fr; gap: 12px 36px; font-size: 50px; line-height: 1.2; }
+  .changes dt { color: var(--muted); }
+  .changes dd { margin: 0; font-family: "JetBrains Mono", monospace; font-size: 44px; align-self: center; }
+  .room { position: absolute; left: 120px; right: 120px; top: 318px; height: 762px; overflow: hidden; border: 2px solid var(--rule); border-bottom: 0; background: var(--paper); }
+  .room img { position: absolute; left: 0; width: 100%; display: block; }
+  .bullets { display: grid; gap: 30px; }
+  .bullets div { display: grid; grid-template-columns: 560px 1fr; gap: 36px; align-items: baseline; }
+  .bullets b { font-size: 54px; font-weight: 600; }
+  .bullets span { font-size: 48px; line-height: 1.2; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="scene center" data-from="0" data-to="7.5">
+  <h1 class="a" data-at="0.2">You are buying a small business that lives on-chain.</h1>
+  <p class="a big muted" data-at="2.2">Its account holds 0.7 NEAR. The price looks fair.</p>
+  <p class="a big bad" data-at="4.2">The seller can empty that account while your payment is on its way.</p>
+</section>
+
+<section class="scene center" data-from="7.5" data-to="15.5">
+  <div class="a kicker" data-at="0.1">DEED</div>
+  <h1 class="a" data-at="0.3">An NFT that owns a NEAR account.</h1>
+  <div class="diagram">
+    <div class="card a" data-at="1.4"><span class="label">THE NFT</span><strong>Translation desk</strong><span class="id">desk-5</span></div>
+    <div class="arrow a" data-at="2.2" aria-hidden="true">→</div>
+    <div class="card a" data-at="2.4"><span class="label">THE ACCOUNT IT OWNS</span><span class="id">desk-5.v1.deed-hq.testnet</span><strong>Access keys: 0</strong><span class="muted small">Nobody can sign for it, not even the seller.</span></div>
+  </div>
+  <p class="a" data-at="4.4">Sell the NFT, and the money, the revenue and the control move in one transaction.</p>
+</section>
+
+<section class="scene" data-from="15.5" data-to="27">
+  <h2 class="a" data-at="0.1">It earns, and an agent runs it on a budget.</h2>
+  <div class="log">
+    <div class="line a" data-at="0.8"><span class="tag ok">OK</span><span>customer pays 0.20 NEAR</span><span class="tx">HMXz6x5W</span></div>
+    <div class="line a" data-at="1.5"><span class="tag ok">OK</span><span>customer pays 0.15 NEAR</span><span class="tx">9yaxcQyC</span></div>
+    <div class="line a" data-at="2.2"><span class="tag ok">OK</span><span>customer pays 0.25 NEAR</span><span class="tx">EWzLLF67</span></div>
+    <div class="line a" data-at="3.2"><span class="tag ok">OK</span><span>agent pays its supplier 0.05 NEAR</span><span class="tx">82SK14Q5</span></div>
+    <div class="line a pop" data-at="4.8"><span class="tag no">BLOCKED</span><span>agent tries to pay itself 0.5 NEAR</span><span></span><span class="why">over the operator budget</span></div>
+    <div class="line a pop" data-at="6.4"><span class="tag no">BLOCKED</span><span>agent tries to put the deed up for sale</span><span></span><span class="why">Access key does not allow method list</span></div>
+  </div>
+  <p class="a small muted" data-at="8">Its function-call key can call one method on one contract. It never holds the deed. Real testnet transactions.</p>
+</section>
+
+<section class="scene" data-from="27" data-to="36">
+  <h2 class="a" data-at="0.1">It goes on sale. The buyer checks it.</h2>
+  <div class="figures">
+    <div class="figure a" data-at="0.8"><small>Price</small><b>0.300</b></div>
+    <div class="figure a" data-at="1.1"><small>In the account</small><b>0.700</b></div>
+    <div class="figure a" data-at="1.4"><small>Nonce</small><b>3</b></div>
+  </div>
+  <p class="a" data-at="2.6">The nonce changes whenever anything could have left the account. The buyer keeps that number.</p>
+  <div class="log">
+    <div class="line a pop" data-at="5"><span class="tag no">BLOCKED</span><span>seller tries to empty the account while it is listed</span><span></span><span class="why">the deed is listed: unlist it first</span></div>
+  </div>
+</section>
+
+<section class="scene" data-from="36" data-to="52">
+  <h2 class="a" data-at="0.1">The attack: drain it after the buyer looked.</h2>
+  <div class="figures">
+    <div class="figure a" data-at="0.4"><small>Price</small><b>0.300</b></div>
+    <div class="figure a" data-at="0.4"><small>In the account</small><b class="count" data-a="0.7" data-b="0.3" data-start="3.2" data-end="4.2" data-digits="3">0.700</b></div>
+    <div class="figure a" data-at="0.4"><small>Nonce</small><b class="count" data-a="3" data-b="6" data-start="1.8" data-end="5.6" data-digits="0">3</b></div>
+  </div>
+  <div class="log">
+    <div class="line a" data-at="1.8" data-until="7.6"><span class="tag ok">OK</span><span>seller unlists</span><span class="tx">5x15ePZZ</span></div>
+    <div class="line a" data-at="3.2" data-until="7.6"><span class="tag ok">OK</span><span>seller takes 0.4 NEAR out</span><span class="tx">Avgo5XvS</span></div>
+    <div class="line a" data-at="4.6" data-until="7.6"><span class="tag ok">OK</span><span>seller lists it again at the same price</span><span class="tx">HtGNFKom</span></div>
+  </div>
+  <div class="overlay" data-pin="7.6">
+    <p class="a big" data-at="7.8">The buyer pays 0.3 NEAR and names nonce 3.</p>
+    <div class="verdict a pop" data-at="9.6" style="margin-top:26px"><span class="stamp">BLOCKED</span><span class="said">the deed changed since you inspected it</span></div>
+    <p class="a" data-at="11.4" style="margin-top:26px">The deposit came back. The buyer only paid gas.</p>
+  </div>
+</section>
+
+<section class="scene" data-from="52" data-to="64">
+  <h2 class="a" data-at="0.1">A fair sale, at the new state.</h2>
+  <div class="log">
+    <div class="line a" data-at="0.7"><span class="tag ok">OK</span><span>relisted at 0.05 NEAR. Buyer checks: nonce 7</span><span class="tx">B82KcEAV</span></div>
+    <div class="line a" data-at="1.9"><span class="tag ok">OK</span><span>a customer pays 0.1 NEAR while the buyer decides</span><span class="tx">FghFVv8g</span></div>
+    <div class="line a" data-at="3.1"><span class="tag ok">OK</span><span>buyer buys, naming nonce 7</span><span class="tx">4NhXSfkC</span></div>
+  </div>
+  <dl class="changes a" data-at="4.5" style="margin-top:10px">
+    <dt>Owner</dt><dd>seller → buyer</dd>
+    <dt>Agent</dt><dd>access ended</dd>
+    <dt>Account</dt><dd>0.400 NEAR stays, 0 keys</dd>
+  </dl>
+  <div class="log">
+    <div class="line a pop" data-at="7"><span class="tag no">BLOCKED</span><span>the seller's agent tries to spend</span><span></span></div>
+    <div class="line a pop" data-at="8"><span class="tag no">BLOCKED</span><span>the seller tries to withdraw</span><span></span></div>
+  </div>
+</section>
+
+<section class="scene" data-from="64" data-to="73">
+  <h2 class="a" data-at="0.1">Every buyer gets a data room.</h2>
+  <p class="a muted" data-at="0.6">Read from the chain in your own browser, with no backend.</p>
+  <div class="room a" data-at="1"><img src="dataroom.png" alt="The data room page showing five passed checks" class="scroll" data-start="3.4" data-end="8.6" data-distance="1250"></div>
+</section>
+
+<section class="scene center" data-from="73" data-to="81">
+  <h2 class="a" data-at="0.1" style="margin-bottom:14px">Why this works on NEAR</h2>
+  <div class="bullets">
+    <div class="a" data-at="0.6"><b>Sub-accounts</b><span>The NFT owns a real account that anyone can pay.</span></div>
+    <div class="a" data-at="1.8"><b>Keyless accounts</b><span>The protocol guarantees that nobody can sign.</span></div>
+    <div class="a" data-at="3"><b>Function-call keys</b><span>An agent can spend without holding the deed.</span></div>
+    <div class="a" data-at="4.2"><b>Global contracts</b><span>All vaults share one contract. Each stores 132 bytes.</span></div>
+  </div>
+</section>
+
+<section class="scene center" data-from="81" data-to="88">
+  <h1 class="a" data-at="0.2">Deed</h1>
+  <p class="a big" data-at="0.8">Run the attack yourself.</p>
+  <p class="a mono small" data-at="1.6" style="font-size:50px">github.com/ClaudeOpusPremiumAgent/deed</p>
+  <p class="a small muted" data-at="2.6">NEAR testnet, not audited. Written by Claude, an AI model, with a human operator.</p>
+</section>
+
+<script>
+const DURATION = 88;
+const clamp = (x) => Math.min(1, Math.max(0, x));
+const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+const scenes = [...document.querySelectorAll(".scene")].map((el) => ({ el, from: +el.dataset.from, to: +el.dataset.to }));
+
+function seek(t) {
+  for (const { el, from, to } of scenes) {
+    const on = t >= from && t < to;
+    el.style.display = on ? "flex" : "none";
+    if (!on) continue;
+    const local = t - from;
+    el.style.opacity = Math.min(clamp(local / 0.3), clamp((to - t) / 0.3));
+    el.querySelectorAll(".a").forEach((node) => {
+      const p = easeOut(clamp((local - +node.dataset.at) / (node.classList.contains("pop") ? 0.25 : 0.5)));
+      const gone = node.dataset.until && local >= +node.dataset.until;
+      node.style.opacity = gone ? 0 : p;
+      node.style.display = gone ? "none" : "";
+      node.style.transform = node.classList.contains("pop") ? `scale(${1.06 - 0.06 * p})` : `translateY(${(1 - p) * 22}px)`;
+    });
+    el.querySelectorAll(".count").forEach((node) => {
+      const p = clamp((local - +node.dataset.start) / (+node.dataset.end - +node.dataset.start));
+      const value = +node.dataset.a + (+node.dataset.b - +node.dataset.a) * p;
+      node.textContent = value.toFixed(+node.dataset.digits);
+    });
+    el.querySelectorAll(".scroll").forEach((node) => {
+      const p = clamp((local - +node.dataset.start) / (+node.dataset.end - +node.dataset.start));
+      node.style.top = `${-p * +node.dataset.distance}px`;
+    });
+  }
+}
+window.seek = seek;
+window.DURATION = DURATION;
+const params = new URLSearchParams(location.search);
+seek(+(params.get("t") ?? 0));
+</script>
+</body>
+</html>
