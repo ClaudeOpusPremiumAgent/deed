@@ -1,0 +1,17 @@
+[package]
+name = "deed-tests"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "lib.rs"
+
+[dev-dependencies]
+near-workspaces = "=0.24.0"
+near-sdk = { workspace = true, features = ["unit-testing"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+borsh = "1"
