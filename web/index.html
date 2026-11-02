@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deed: data room</title>
+<meta name="description" content="Everything a buyer needs to check before buying a business on NEAR, read straight from the chain.">
+<style>
+  :root {
+    --paper: #f6f2e8; --sheet: #fffdf7; --ink: #1d1b16; --muted: #5f5a4e; --rule: #d8d0bd;
+    --good: #1f5d3a; --good-bg: #e3efe3; --bad: #8c2a1f; --bad-bg: #f6e2dc; --warn: #7a5400; --warn-bg: #f5ead0;
+    --accent: #23395b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #16150f; --sheet: #1f1d16; --ink: #efe9da; --muted: #aaa391; --rule: #3a372b;
+      --good: #8fd3a8; --good-bg: #1c3024; --bad: #f0a493; --bad-bg: #3a1f19; --warn: #e4c172; --warn-bg: #33290f;
+      --accent: #a9c2ea;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.1; margin: 0 0 8px; letter-spacing: -0.01em; }
+  h2 { font-size: 1.3rem; margin: 0 0 12px; }
+  p { margin: 0 0 12px; }
+  a { color: var(--accent); }
+  .lede { color: var(--muted); font-size: 1.1rem; max-width: 62ch; }
+  .mono, code, td.mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.86em; overflow-wrap: anywhere; }
+  .sheet { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 20px; margin-top: 20px; }
+  .picker { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-top: 24px; }
+  label { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+  input, select, button { font: inherit; color: var(--ink); background: var(--sheet); border: 1px solid var(--rule); border-radius: 3px; padding: 8px 10px; min-height: 44px; }
+  input { width: min(320px, 100%); }
+  select { min-width: 200px; }
+  button { cursor: pointer; background: var(--accent); color: var(--sheet); border-color: var(--accent); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .title { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: baseline; border-bottom: 2px solid var(--ink); padding-bottom: 12px; margin-bottom: 16px; }
+  .title h2 { font-size: 1.7rem; margin: 0; }
+  .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .checks li { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; align-items: start; }
+  .stamp { font: 700 0.72rem/1 ui-monospace, Menlo, Consolas, monospace; letter-spacing: 0.06em; text-align: center; padding: 6px 4px; border: 1.5px solid; border-radius: 2px; }
+  .pass { color: var(--good); background: var(--good-bg); }
+  .fail { color: var(--bad); background: var(--bad-bg); }
+  .warn { color: var(--warn); background: var(--warn-bg); }
+  .checks small { display: block; color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere; }
+  .figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin: 0; }
+  .figures div { border-left: 2px solid var(--rule); padding-left: 12px; }
+  .figures dt { color: var(--muted); font-size: 0.88rem; }
+  .figures dd { margin: 0; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 0.93rem; }
+  td.mono { white-space: nowrap; overflow-wrap: normal; }
+  caption { text-align: left; color: var(--muted); padding-bottom: 8px; position: sticky; left: 0; max-width: calc(100vw - 74px); }
+  th { text-align: left; font-weight: 600; border-bottom: 1.5px solid var(--ink); padding: 6px 10px 6px 0; white-space: nowrap; }
+  td { border-bottom: 1px solid var(--rule); padding: 7px 10px 7px 0; vertical-align: top; }
+  pre { background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; padding: 12px; overflow-x: auto; margin: 8px 0 0; }
+  .note { color: var(--muted); font-size: 0.92rem; }
+  #status { margin-top: 12px; }
+  footer { margin-top: 32px; color: var(--muted); font-size: 0.92rem; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Deed data room</h1>
+  <p class="lede">A deed is an NFT that owns a NEAR account. Buy it and the money, the revenue and the right to run that account move to you in one transaction. This page shows what a buyer should check first. It reads the chain directly from your browser, with no backend.</p>
+
+  <form class="picker" id="picker">
+    <label>Contract <input id="contract" class="mono" spellcheck="false" autocomplete="off"></label>
+    <label>Deed <select id="deed"></select></label>
+    <button type="submit">Inspect</button>
+  </form>
+
+  <p id="status" class="note" role="status" aria-live="polite"></p>
+
+  <div id="room" hidden>
+    <section class="sheet">
+      <div class="title"><h2 id="d-title"></h2><span class="mono" id="d-vault"></span></div>
+      <dl class="figures">
+        <div><dt>In the vault now</dt><dd id="f-balance"></dd></div>
+        <div><dt>Recorded revenue</dt><dd id="f-earned"></dd></div>
+        <div><dt>Paid out</dt><dd id="f-paid"></dd></div>
+        <div><dt>Asking price</dt><dd id="f-price"></dd></div>
+      </dl>
+      <p class="note" style="margin-top:14px">Owned by <span class="mono" id="d-owner"></span>. In NEAR.</p>
+    </section>
+
+    <section class="sheet">
+      <h2>Before you buy</h2>
+      <ul class="checks" id="checks"></ul>
+    </section>
+
+    <section class="sheet" id="buy-box" hidden>
+      <h2>Buy at exactly this state</h2>
+      <p>The command names nonce <strong class="mono" id="b-nonce"></strong>. If the seller moves anything out before your transaction lands, the purchase aborts and your deposit comes back. A stale read here can only make a purchase fail, never make it succeed at the wrong state. Revenue arriving meanwhile is yours.</p>
+      <pre class="mono" id="b-cmd"></pre>
+    </section>
+
+    <section class="sheet" id="op-box" hidden>
+      <h2>Running it now</h2>
+      <p>Operator <span class="mono" id="o-id"></span> can spend <span id="o-budget"></span> NEAR until <span id="o-exp"></span>. It loses that right the moment the deed changes hands.</p>
+    </section>
+
+    <section class="sheet">
+      <div class="scroll" tabindex="0" role="region" aria-label="Scrollable table"><table>
+        <caption>History, newest first. The contract keeps the latest 64 entries; the chain keeps all of them.</caption>
+        <thead><tr><th scope="col">#</th><th scope="col">When (UTC)</th><th scope="col">What</th><th scope="col">By</th><th scope="col">To</th><th scope="col">NEAR</th><th scope="col">Note</th><th scope="col">Result</th></tr></thead>
+        <tbody id="t-history"></tbody>
+      </table></div>
+    </section>
+
+    <section class="sheet">
+      <div class="scroll" tabindex="0" role="region" aria-label="Scrollable table"><table>
+        <caption>Revenue, newest first. Latest 20 payments of at least 0.001 NEAR. The seller could pay itself, so look at who paid.</caption>
+        <thead><tr><th scope="col">When (UTC)</th><th scope="col">From</th><th scope="col">NEAR</th><th scope="col">Note</th></tr></thead>
+        <tbody id="t-inflows"></tbody>
+      </table></div>
+    </section>
+
+    <section class="sheet" id="calls-box" hidden>
+      <div class="scroll" tabindex="0" role="region" aria-label="Scrollable table"><table>
+        <caption>Arbitrary calls this account has made. Each one could have left rights on another contract, so read them all.</caption>
+        <thead><tr><th scope="col">#</th><th scope="col">When (UTC)</th><th scope="col">Contract</th><th scope="col">Method</th><th scope="col">Args SHA-256</th><th scope="col">Result</th></tr></thead>
+        <tbody id="t-calls"></tbody>
+      </table></div>
+    </section>
+  </div>
+
+  <footer>
+    <p>Testnet only. Written by Claude, an AI model, with a human operator. <a href="https://github.com/ClaudeOpusPremiumAgent/deed">Source and threat model</a>.</p>
+  </footer>
+</main>
+
+<script>
+const RPC = "https://test.rpc.fastnear.com";
+const DEFAULT_CONTRACT = "v1.deed-hq.testnet";
+const $ = (id) => document.getElementById(id);
+
+async function rpc(params) {
+  const res = await fetch(RPC, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "query", params: { finality: "final", ...params } }) });
+  const body = await res.json();
+  if (body.error || body.result?.error) throw new Error(body.error?.cause?.name ?? body.result?.error ?? "RPC error");
+  return body.result;
+}
+
+async function view(contract, method, args = {}) {
+  const result = await rpc({ request_type: "call_function", account_id: contract, method_name: method, args_base64: btoa(JSON.stringify(args)) });
+  return JSON.parse(new TextDecoder().decode(new Uint8Array(result.result)));
+}
+
+const account = (id) => rpc({ request_type: "view_account", account_id: id });
+const keys = async (id) => (await rpc({ request_type: "view_access_key_list", account_id: id })).keys;
+
+const nearText = (yocto) => {
+  if (yocto == null) return "-";
+  const milli = BigInt(yocto) / 10n ** 21n;
+  return (Number(milli) / 1000).toFixed(3);
+};
+const when = (ms) => (ms ? new Date(ms).toISOString().slice(0, 16).replace("T", " ") : "-");
+const short = (id) => id ?? "-";
+
+function base58ToHex(text) {
+  const alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+  let value = 0n;
+  for (const c of text) value = value * 58n + BigInt(alphabet.indexOf(c));
+  return value.toString(16).padStart(64, "0");
+}
+
+function cell(text, mono) {
+  const td = document.createElement("td");
+  td.textContent = text;
+  if (mono) td.className = "mono";
+  return td;
+}
+
+function row(tbody, cells) {
+  const tr = document.createElement("tr");
+  cells.forEach(([text, mono]) => tr.append(cell(text, mono)));
+  tbody.append(tr);
+}
+
+function check(state, title, detail) {
+  const li = document.createElement("li");
+  const stamp = document.createElement("span");
+  stamp.className = `stamp ${state}`;
+  stamp.textContent = { pass: "PASS", fail: "FAIL", warn: "READ" }[state];
+  const body = document.createElement("div");
+  body.textContent = title;
+  const small = document.createElement("small");
+  small.textContent = detail;
+  body.append(small);
+  li.append(stamp, body);
+  $("checks").append(li);
+}
+
+const KIND = { Mint: "Minted", Pay: "Paid out", FtPay: "Paid tokens", NftPay: "Sent NFT", Call: "Arbitrary call", SetOperator: "Operator set", RevokeOperator: "Operator removed", List: "Listed for sale", Unlist: "Unlisted", Sale: "Sold", Transfer: "Given away", TransferReverted: "Transfer bounced" };
+const RESULT = (ok) => (ok === true ? "ok" : ok === false ? "failed" : "running");
+
+async function inspect(contract, token) {
+  $("status").textContent = "Reading the chain...";
+  $("room").hidden = true;
+  const [info, nft, codeHash, contractKeys] = await Promise.all([
+    view(contract, "deed_info", { token_id: token }),
+    view(contract, "nft_token", { token_id: token }),
+    view(contract, "vault_code_hash"),
+    keys(contract),
+  ]);
+  if (!info) throw new Error("No such deed");
+  const [vault, vaultKeys] = await Promise.all([account(info.vault_id), keys(info.vault_id)]);
+
+  $("d-title").textContent = nft?.metadata?.title || token;
+  $("d-vault").textContent = info.vault_id;
+  $("d-owner").textContent = info.owner_id;
+  $("f-balance").textContent = nearText(vault.amount);
+  $("f-earned").textContent = nearText(info.earned);
+  $("f-paid").textContent = nearText(info.paid_out);
+  $("f-price").textContent = info.price ? nearText(info.price) : "not for sale";
+
+  $("checks").replaceChildren();
+  check(vaultKeys.length === 0 ? "pass" : "fail", vaultKeys.length === 0 ? "Nobody holds a key to this account" : `This account has ${vaultKeys.length} access keys`, "The seller cannot keep a way in. Read from view_access_key_list.");
+  const vaultHash = vault.global_contract_hash ? base58ToHex(vault.global_contract_hash) : null;
+  check(vaultHash === codeHash ? "pass" : "fail", vaultHash === codeHash ? "The account runs the published vault code" : "The account does not run the published vault code", `Global contract ${codeHash}. It cannot add keys, deploy code or delete itself.`);
+  check(contractKeys.length === 0 ? "pass" : "fail", contractKeys.length === 0 ? "Nobody can change the deed contract" : `The deed contract has ${contractKeys.length} access keys, so its operator could change the rules`, `${contract} has no access keys and no upgrade path.`);
+  check(info.sealed ? "pass" : "warn", info.sealed ? "Sealed: only plain payments have ever left this account" : `Not sealed: ${info.calls.length} arbitrary calls made`, info.sealed ? "It has only ever made plain and token payments, so it cannot have left an approval or a position on another contract." : "Each call could have left an approval or a deposit elsewhere. Read the list below before buying.");
+  check(info.pending === 0 ? "pass" : "fail", info.pending === 0 ? "Nothing is still leaving the account" : `${info.pending} outflows still running`, "A sale cannot complete while an outflow is running.");
+
+  $("buy-box").hidden = !info.price;
+  if (info.price) {
+    $("b-nonce").textContent = info.nonce;
+    $("b-cmd").textContent = `near contract call-function as-transaction ${contract} buy \\\n  json-args '${JSON.stringify({ token_id: token, expected_nonce: info.nonce })}' \\\n  prepaid-gas '100 Tgas' attached-deposit '${nearText(info.price)} NEAR' \\\n  sign-as YOU.testnet network-config testnet sign-with-keychain send`;
+  }
+  $("op-box").hidden = !info.operator;
+  if (info.operator) {
+    $("o-id").textContent = info.operator.account_id;
+    $("o-budget").textContent = nearText(info.operator.budget);
+    $("o-exp").textContent = when(info.operator.expires_at_ms);
+  }
+
+  $("t-history").replaceChildren();
+  [...info.history].reverse().forEach((e) => row($("t-history"), [[e.seq], [when(e.at_ms)], [KIND[e.kind] ?? e.kind], [short(e.actor), true], [short(e.to), true], [e.amount ? nearText(e.amount) : "-"], [e.memo ?? "-"], [RESULT(e.ok)]]));
+  $("t-inflows").replaceChildren();
+  [...info.inflows].reverse().forEach((e) => row($("t-inflows"), [[when(e.at_ms)], [e.from, true], [nearText(e.amount)], [e.memo ?? "-"]]));
+  if (!info.inflows.length) row($("t-inflows"), [["No recorded revenue yet"], [""], [""], [""]]);
+  $("calls-box").hidden = info.calls.length === 0;
+  $("t-calls").replaceChildren();
+  info.calls.forEach((c) => row($("t-calls"), [[c.seq], [when(c.at_ms)], [c.receiver_id, true], [c.method, true], [c.args_sha256, true], [RESULT(c.ok)]]));
+
+  $("room").hidden = false;
+  $("status").textContent = `Read at finality "final". Nonce ${info.nonce}.`;
+  const url = new URL(location);
+  url.searchParams.set("contract", contract);
+  url.searchParams.set("deed", token);
+  history.replaceState(null, "", url);
+}
+
+async function loadDeeds(contract, wanted) {
+  const tokens = await view(contract, "nft_tokens", { from_index: "0", limit: 100 });
+  $("deed").replaceChildren(...tokens.map((t) => new Option(`${t.metadata?.title ?? t.token_id} (${t.token_id})`, t.token_id)));
+  const pick = tokens.find((t) => t.token_id === wanted) ?? tokens[tokens.length - 1];
+  if (!pick) throw new Error("This contract has no deeds yet");
+  $("deed").value = pick.token_id;
+  return pick.token_id;
+}
+
+const params = new URLSearchParams(location.search);
+$("contract").value = params.get("contract") ?? DEFAULT_CONTRACT;
+
+const guarded = (run) => run().catch((e) => { $("status").textContent = `Could not read that: ${e.message}`; $("room").hidden = true; });
+$("picker").addEventListener("submit", (e) => {
+  e.preventDefault();
+  guarded(async () => {
+    const token = $("deed").value;
+    const contract = $("contract").value.trim();
+    await inspect(contract, await loadDeeds(contract, token));
+  });
+});
+$("deed").addEventListener("change", () => guarded(() => inspect($("contract").value.trim(), $("deed").value)));
+guarded(async () => {
+  const contract = $("contract").value.trim();
+  await inspect(contract, await loadDeeds(contract, params.get("deed")));
+});
+</script>
+</body>
+</html>
