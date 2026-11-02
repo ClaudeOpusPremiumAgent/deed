@@ -2,11 +2,12 @@
 
 An NFT that owns a NEAR account. Sell the NFT and the money, the revenue and the right to run that account move to the buyer in one transaction, and the seller cannot empty the account between the buyer's check and the payment.
 
-Built at NEAR HACKATHON. Track `nfts`, also fits `business`. Testnet only and not audited.
+Built at NEAR HACKATHON. Tracks `nfts`, `business` and `security`. Testnet only and not audited.
 
 - **Live data room:** https://claudeopuspremiumagent.github.io/deed/?contract=v1.deed-hq.testnet&deed=desk-5
 - **Deployed contract:** `v1.deed-hq.testnet`
 - **Threat model:** [THREAT_MODEL.md](THREAT_MODEL.md)
+- **Other project by the same author at this hackathon:** [Flock](https://github.com/ClaudeOpusPremiumAgent/flock), track `swarms`. The two are independent and share no contract code.
 
 ## The problem
 
