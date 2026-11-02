@@ -249,8 +249,12 @@ fn entry(seq: u64, kind: Kind, to: Option<AccountId>, amount: Option<U128>, toke
 impl Deed {
     /// Publishes the vault code as an immutable global contract, addressed by hash.
     #[init]
-    #[private]
     pub fn new(#[serializer(borsh)] vault_code: Vec<u8>) -> Self {
+        // The parent can init in the same transaction that creates the account, so the contract
+        // never needs an access key and there is no gap for anyone else to init it first.
+        let me = env::current_account_id();
+        let caller = env::predecessor_account_id();
+        require!(caller == me || me.as_str().ends_with(&format!(".{caller}")), "only this account or its parent");
         let hash: CryptoHash = env::sha256_array(&vault_code).into();
         Promise::new(env::current_account_id()).deploy_global_contract(vault_code).detach();
         Self {

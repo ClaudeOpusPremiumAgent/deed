@@ -20,5 +20,8 @@ build() {
 case "$1" in
   build) build ;;
   test) build; shift; $RUN cargo test -p deed-tests "$@" -- --nocapture --test-threads=1 ;;
+  # Node scripts talk to testnet. Their testnet keys stay in .secrets/, which git ignores.
+  node) shift; docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/app -w /app -e HOME=/tmp node:24-slim node "$@" ;;
+  npm) shift; docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/app -w /app -e HOME=/tmp node:24-slim npm "$@" ;;
   *) $RUN "$@" ;;
 esac

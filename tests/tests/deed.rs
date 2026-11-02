@@ -138,6 +138,9 @@ async fn mint_creates_a_keyless_vault() -> anyhow::Result<()> {
     let supply: String = t.deed.view("nft_total_supply").await?.json()?;
     assert_eq!(supply, "1");
 
+    let stolen_init = t.bob.call(t.deed.id(), "new").args_borsh(vec![0u8]).gas(Gas::from_tgas(100)).transact().await?;
+    assert!(stolen_init.is_failure(), "nobody else can initialise the contract");
+
     failed_with(&t.mint("Bad.Name", near(1)).await?, "token_id must be");
     failed_with(&t.mint("cheap", NearToken::from_millinear(100)).await?, "attach at least");
     Ok(())
